@@ -1,5 +1,6 @@
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.Stack;
 public class graph{
 
     // graph class
@@ -31,14 +32,19 @@ public class graph{
             dist = Integer.MAX_VALUE;
             visited = false;
         }
+        public String toString(){
+            return this.name;
+        }
+
      
     }
     public HashMap<String, ArrayList<edge>> Graphmap; 
-
+    public ArrayList <Node> path;
     // constructors
     // build an empty graph
     public graph(){
         Graphmap = new HashMap <String, ArrayList<edge>>();
+        path = new ArrayList<Node>();
     }
    
     // constructor for a list of strings.
@@ -96,21 +102,23 @@ public class graph{
             return name+edges;
         }
     }
-
-
+    
     // evaluate
     // find the lowest cost path from node A to node B
     // use Dijkstra's algrotihm
     public String evaluate(String start, String end){
+        path = new ArrayList<Node>();
         // set initial node as zero distance
+        String DoneName= "";
+        int DoneWeight= 0;
         HashMap<String, Node> nodeMap = new HashMap<String, Node>();
-        HashMap<String, Integer> doneMap = new HashMap<String, Integer>();
         for(String a : Graphmap.keySet()){
             nodeMap.put(a, new Node(a));
         }
         Node curent = nodeMap.get(start);
         curent.dist = 0; 
         do{
+            path.add(curent);
             // nodemap is the unvisited set
             // get the reachable nodes from the map
             ArrayList<edge> neighbors =  Graphmap.get(curent.name);
@@ -124,24 +132,23 @@ public class graph{
                     nodeMap.put(name, t);
                 }
             }
-            curent.visited = true;
-            System.out.println(curent.name+ " " + curent.dist);
             nodeMap.remove(curent.name);
-            doneMap.put(curent.name, curent.dist);
+            DoneWeight = curent.dist;
             int testDist = Integer.MAX_VALUE;
-            for(String a:nodeMap.keySet()){
-                if(nodeMap.get(a).dist <= testDist){
-                    curent = nodeMap.get(a);
+            System.out.println(curent+ " "+neighbors.size());
+            for(edge a : neighbors){
+                System.out.println("    "+a.to);
+                // have to look at the neighbors' weights, not the whole graph derpface
+                if(nodeMap.get(a.to).dist <= testDist){
+                    curent = nodeMap.get(a.to);
                     testDist = curent.dist;
                 }
             }
-
         }while(nodeMap.containsKey(end));
 
 
-        return "Distance of: "+doneMap.get(end);
+        return "Distance of: "+ DoneWeight;
     }
-
     public String toString(){
         String ret ="";
         for(String key: Graphmap.keySet()){
@@ -150,6 +157,15 @@ public class graph{
         return ret;
     }
 
+    public String printPath(){
+        String p = "";
+        for(int i = 0; i< path.size()-1; i++){
+            p = p+"... "+path.get(i).name;
+        }
+        p = p+ "... "+path.get(path.size()-1).name;
+        return p;
+    }
+   
 // toDo:
     // evaluate(start, end) - placeholder in place
 //

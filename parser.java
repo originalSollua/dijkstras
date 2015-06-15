@@ -20,6 +20,7 @@ public class parser{
             System.out.println("Done building graph");
             System.out.println(p.testGraph.toString());
             System.out.println(p.testGraph.evaluate(args[1], args[2]));
+            System.out.println(p.testGraph.printPath());
         }
         else{
             p.emptyGraph();
